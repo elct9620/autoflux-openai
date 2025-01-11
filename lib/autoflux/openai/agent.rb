@@ -19,7 +19,7 @@ module Autoflux
         loop do
           res = complete
           @memory << res
-          break res unless res[:tool_calls]&.any?
+          break res[:content] || "" unless res[:tool_calls]&.any?
 
           res[:tool_calls].each do |call|
             @memory << { role: :tool, content: use(call, **context).to_json, tool_call_id: call[:id] }

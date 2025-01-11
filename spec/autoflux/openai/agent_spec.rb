@@ -72,7 +72,7 @@ RSpec.describe Autoflux::OpenAI::Agent do
       )
     end
 
-    it { is_expected.to include(role: "assistant", content: "Hello, world!") }
+    it { is_expected.to eq("Hello, world!") }
 
     context "with tool calls" do
       before do
@@ -114,7 +114,7 @@ RSpec.describe Autoflux::OpenAI::Agent do
           )
       end
 
-      it { is_expected.to include(role: "assistant", content: "HELLO") }
+      it { is_expected.to eq("HELLO") }
       it "is expected to use tool" do
         call
         expect(tool).to have_received(:call).with({ text: "hello" }).once
