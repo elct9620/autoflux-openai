@@ -4,11 +4,14 @@ module Autoflux
   module OpenAI
     # The agent is design to use OpenAI as an agent
     class Agent
-      attr_reader :model, :memory
+      DEFAULT_NAME = "openai"
 
-      def initialize(model:, client: Client.new, tools: [], memory: [])
+      attr_reader :name, :model, :memory
+
+      def initialize(model:, name: DEFAULT_NAME, client: Client.new, tools: [], memory: [])
         @client = client
         @model = model
+        @name = name
         @memory = memory
         @_tools = tools
       end

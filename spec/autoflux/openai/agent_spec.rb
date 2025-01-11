@@ -4,6 +4,7 @@ RSpec.describe Autoflux::OpenAI::Agent do
   subject(:agent) { described_class.new(model: "gpt-4o-mini") }
 
   it { is_expected.to have_attributes(model: "gpt-4o-mini") }
+  it { is_expected.to have_attributes(name: "openai") }
   it { is_expected.to have_attributes(memory: []) }
   it { is_expected.to have_attributes(tools: nil) }
 
@@ -22,6 +23,12 @@ RSpec.describe Autoflux::OpenAI::Agent do
           ]
         }.to_json
       )
+  end
+
+  context "with name" do
+    subject(:agent) { described_class.new(model: "gpt-4o-mini", name: "test") }
+
+    it { is_expected.to have_attributes(name: "test") }
   end
 
   context "with tools" do
