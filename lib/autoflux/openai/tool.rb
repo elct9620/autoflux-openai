@@ -6,7 +6,7 @@ module Autoflux
     class Tool
       attr_reader :name, :description, :parameters
 
-      def initialize(name:, description:, parameters: [], &executor)
+      def initialize(name:, description:, parameters: nil, &executor)
         @name = name
         @description = description
         @parameters = parameters

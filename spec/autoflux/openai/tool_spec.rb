@@ -22,6 +22,17 @@ RSpec.describe Autoflux::OpenAI::Tool do
                                                  required: ["text"] })
   }
 
+  context "without parameters" do
+    subject(:tool) do
+      described_class.new(
+        name: "uppercase",
+        description: "Converts text to uppercase"
+      ) { |params| { text: params[:text].upcase } }
+    end
+
+    it { is_expected.to have_attributes(parameters: nil) }
+  end
+
   context "without executor" do
     subject(:tool) do
       described_class.new(
