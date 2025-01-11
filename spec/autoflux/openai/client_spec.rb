@@ -33,7 +33,7 @@ RSpec.describe Autoflux::OpenAI::Client do
         )
     end
 
-    it { expect(call).to include(choices: [{ message: { role: "user", content: "Thank you!" } }]) }
+    it { is_expected.to include(choices: [{ message: { role: "user", content: "Thank you!" } }]) }
 
     context "when the response is not JSON" do
       before do
@@ -51,7 +51,7 @@ RSpec.describe Autoflux::OpenAI::Client do
           )
       end
 
-      it { expect(call).to be_empty }
+      it { is_expected.to be_empty }
     end
 
     context "when the response is not successful" do

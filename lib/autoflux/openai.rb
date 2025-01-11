@@ -8,5 +8,6 @@ module Autoflux
     class Error < StandardError; end
 
     require_relative "openai/client"
+    require_relative "openai/agent"
   end
 end

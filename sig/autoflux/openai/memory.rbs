@@ -1,0 +1,10 @@
+module Autoflux
+  module OpenAI
+    interface _Memory
+      include _ToA[_ToJson]
+
+      def push: (*_ToJson) -> self
+      def <<: (_ToJson) -> self
+    end
+  end
+end

@@ -1,0 +1,14 @@
+module Autoflux
+  module OpenAI
+    # The agent is design to use OpenAI as an agent
+    class Agent
+      @client: Client
+      @model: String
+      @memory: _Memory
+
+      def initialize: (model: String, ?client: Client, ?memory: _Memory) -> void
+      def call: (String prompt) -> _ToJson
+      def complete: () -> _ToJson
+    end
+  end
+end
