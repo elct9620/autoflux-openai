@@ -1,28 +1,114 @@
-# Autoflux::Openai
+Autoflux::OpenAI
+===
 
-TODO: Delete this and the text below, and describe your gem
-
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/autoflux/openai`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem implements [autoflux](https://github.com/elct9620/autoflux) agent to use OpenAI as the backend.
 
 ## Installation
-
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
 
 Install the gem and add to the application's Gemfile by executing:
 
 ```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+bundle add autoflux-openai
 ```
 
 If bundler is not being used to manage dependencies, install the gem by executing:
 
 ```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
+gem install autoflux-openai
 ```
 
 ## Usage
 
-TODO: Write usage instructions here
+The use the agent, set the `OPENAI_API_KEY` environment variable that the agent can use to authenticate with OpenAI.
+
+```ruby
+agent = Autoflux::OpenAI::Agent.new(model: "gpt-4o-mini")
+res = agent.call("Hello, world!")
+# => "Hello, world!" from OpenAI
+```
+
+> The agent will return `content` from the as the interface of the `autoflux` agent.
+
+### Tool
+
+You can attach tool to the agent to give it more capabilities.
+
+```ruby
+uppercase = Autoflux::OpenAI::Tool.new(
+    name: "uppercase",
+    description: "Convert the content to uppercase",
+    parameters: {
+        type: "object",
+        properties: {
+            text: {
+                type: "string"
+            }
+        }
+    }
+) do |params|
+    { text: params[:text].upcase }
+end
+
+agent = Autoflux::OpenAI::Agent.new(
+    model: "gpt-4o-mini",
+    tools: [uppercase],
+    memory: [
+        { role: "system", content: "Always transform the user input and don't do anything else." }
+    ]
+)
+res = agent.call("Hello, world!")
+# => "HELLO, WORLD!" from OpenAI
+```
+
+### Client
+
+This gem embeds a lightweight client to interact with OpenAI API. The client can be used to interact with OpenAI API directly.
+
+```ruby
+client = Autoflux::OpenAI::Client.new(api_key: "your-api-key")
+res = client.call(
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "Hello, world!" }]
+)
+# => { choices: [{ message: { role: "assistant", content: "Hello World!" }}] }
+```
+
+If your api key or endpoint is not default, you can specify them in the client.
+
+```ruby
+client = Autoflux::OpenAI::Client.new(
+    api_key: "your-api-key",
+    endpoint: URI("https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/openai")
+)
+client.call(
+    model: "gpt-4o-mini",
+    messages: [{ role: "user", content: "Hello, world!" }]
+)
+```
+
+### Memory
+
+The agent default use a Ruby array to store the conversation history. If you want to use a different memory store, you can implement the `Autoflux::OpenAI::_Memory` interface and pass it to the agent.
+
+```ruby
+class MyMemory
+    def initialize
+        @store = []
+    end
+
+    def push(message)
+        @store.push(message)
+    end
+
+    def <<(message)
+        push(message)
+    end
+
+    def to_a
+        @store.last(100)
+    end
+end
+```
 
 ## Development
 
@@ -32,8 +118,8 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/autoflux-openai.
+Bug reports and pull requests are welcome on GitHub at https://github.com/elct9620/autoflux-openai.
 
 ## License
 
-The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
+The gem is available as open source under the terms of the [Apache License 2.0](https://opensource.org/licenses/Apache-2.0).
