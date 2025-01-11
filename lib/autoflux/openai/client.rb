@@ -16,6 +16,8 @@ module Autoflux
 
       def call(payload)
         res = http.post(@endpoint.path || "", payload.to_json, headers)
+        raise Error, res.body unless res.is_a?(Net::HTTPSuccess)
+
         JSON.parse(res.body, symbolize_names: true)
       rescue JSON::ParserError
         {}

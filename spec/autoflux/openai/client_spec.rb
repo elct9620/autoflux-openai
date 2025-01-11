@@ -53,5 +53,24 @@ RSpec.describe Autoflux::OpenAI::Client do
 
       it { expect(call).to be_empty }
     end
+
+    context "when the response is not successful" do
+      before do
+        stub_request(:post, "https://api.openai.com/v1/chat/completions")
+          .with(
+            body: payload.to_json,
+            headers: {
+              "Content-Type" => "application/json",
+              "Authorization" => "Bearer my-api-key"
+            }
+          ).to_return(
+            status: 401,
+            body: "Unauthorized",
+            headers: { "Content-Type" => "text/plain" }
+          )
+      end
+
+      it { expect { call }.to raise_error(Autoflux::OpenAI::Error, "Unauthorized") }
+    end
   end
 end
