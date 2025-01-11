@@ -7,6 +7,8 @@ target :lib do
   signature "sig"
   ignore_signature "sig/test"
 
+  library "net-http"
+  library "json"
   # library "pathname"              # Standard libraries
   # library "strong_json"           # Gems
 

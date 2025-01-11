@@ -1,0 +1,18 @@
+module Autoflux
+  module OpenAI
+    # The minimal completion api client to interact with OpenAI
+    class Client
+      @api_key: String
+      @endpoint: URI::Generic
+      @headers: Hash[String, String]
+      @http: Net::HTTP
+
+      DEFAULT_ENDPOINT: URI::Generic
+
+      def initialize: (?api_key: String, ?endpoint: URI::Generic) -> void
+      def call: (::_ToJson payload) -> Hash[Symbol, untyped]
+      def headers: () -> Hash[String, String]
+      def http: () -> Net::HTTP
+    end
+  end
+end
