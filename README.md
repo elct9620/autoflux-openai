@@ -27,7 +27,15 @@ res = agent.call("Hello, world!")
 # => "Hello, world!" from OpenAI
 ```
 
-> The agent will return `content` from the as the interface of the `autoflux` agent.
+> The agent will return `content` from the response as the interface of the `autoflux` agent.
+
+If you want to use as multi agents the agent name can be set.
+
+```ruby
+agent = Autoflux::OpenAI::Agent.new(name: "shopping", model: "gpt-4o-mini")
+res = agent.call("Hello, world!")
+# => "Hello, world!" from OpenAI
+```
 
 ### Tool
 
