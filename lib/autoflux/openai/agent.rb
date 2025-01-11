@@ -13,9 +13,18 @@ module Autoflux
         @_tools = tools
       end
 
-      def call(prompt)
+      def call(prompt, **context)
         @memory << { role: :user, content: prompt }
-        complete
+
+        loop do
+          res = complete
+          @memory << res
+          break res unless res[:tool_calls]&.any?
+
+          res[:tool_calls].each do |call|
+            @memory << { role: :tool, content: use(call, **context).to_json, tool_call_id: call[:id] }
+          end
+        end
       end
 
       def tools # rubocop:disable Metrics/MethodLength
@@ -31,6 +40,19 @@ module Autoflux
             }
           }
         end
+      end
+
+      def tool(name)
+        @_tools.find { |tool| tool.name == name }
+      end
+
+      def use(call, **context)
+        name = call.dig(:function, :name)
+        params = JSON.parse(call.dig(:function, :arguments), symbolize_names: true)
+
+        tool(name)&.call(params, **context) || { error: "tool not found: #{name}" }
+      rescue JSON::ParserError
+        { error: "unable parse argument as JSON" }
       end
 
       private

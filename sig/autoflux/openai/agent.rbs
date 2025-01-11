@@ -1,5 +1,8 @@
 module Autoflux
   module OpenAI
+    type agentResponse = Hash[Symbol, untyped] & _ToJson
+    type toolCall = Hash[Symbol, untyped]
+
     # The agent is design to use OpenAI as an agent
     class Agent
       @client: Client
@@ -8,9 +11,11 @@ module Autoflux
       @_tools: Array[_Tool]
 
       def initialize: (model: String, ?client: Client, ?memory: _Memory) -> void
-      def call: (String prompt) -> _ToJson
-      def complete: () -> _ToJson
+      def call: (String prompt, **untyped context) -> agentResponse
+      def use: (toolCall call, **untyped context) -> _ToJson
+      def complete: () -> agentResponse
       def tools: () -> Array[_ToJson]?
+      def tool: (String name) -> _Tool?
     end
   end
 end

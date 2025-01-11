@@ -39,7 +39,7 @@ RSpec.describe Autoflux::OpenAI::Agent do
               },
               required: ["text"]
             }
-          )
+          ) { |params| params[:text].upcase }
         ]
       )
     end
@@ -57,11 +57,68 @@ RSpec.describe Autoflux::OpenAI::Agent do
                                          } }
                                      ])
     end
+
+    it { expect(agent.tool("uppercase")).to be_a(Autoflux::OpenAI::Tool) }
+    it { expect(agent.use({ function: { name: "uppercase", arguments: { text: "hello" }.to_json } })).to eq("HELLO") }
   end
 
   describe "#call" do
     subject(:call) { agent.call("Hello, world!") }
+    let(:tool) { spy(Autoflux::OpenAI::Tool, name: "uppercase") }
+    let(:agent) do
+      described_class.new(
+        model: "gpt-4o-mini",
+        tools: [tool]
+      )
+    end
 
     it { is_expected.to include(role: "assistant", content: "Hello, world!") }
+
+    context "with tool calls" do
+      before do
+        stub_request(:post, "https://api.openai.com/v1/chat/completions")
+          .to_return(
+            status: 200,
+            body: {
+              choices: [
+                {
+                  message: {
+                    role: "assistant",
+                    tool_calls: [
+                      {
+                        id: "1",
+                        function: {
+                          name: "uppercase",
+                          arguments: { text: "hello" }.to_json
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }.to_json
+          )
+          .then
+          .to_return(
+            status: 200,
+            body: {
+              choices: [
+                {
+                  message: {
+                    role: "assistant",
+                    content: "HELLO"
+                  }
+                }
+              ]
+            }.to_json
+          )
+      end
+
+      it { is_expected.to include(role: "assistant", content: "HELLO") }
+      it "is expected to use tool" do
+        call
+        expect(tool).to have_received(:call).with({ text: "hello" }).once
+      end
+    end
   end
 end
