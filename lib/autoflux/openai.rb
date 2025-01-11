@@ -9,5 +9,6 @@ module Autoflux
 
     require_relative "openai/client"
     require_relative "openai/agent"
+    require_relative "openai/tool"
   end
 end

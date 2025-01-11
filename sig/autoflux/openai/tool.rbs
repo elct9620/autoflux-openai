@@ -1,0 +1,22 @@
+module Autoflux
+  module OpenAI
+    type toolParam = Hash[Symbol, untyped]
+
+    interface _Tool
+      def name: () -> String
+      def description: () -> String
+      def parameters: () -> _ToJson
+      def call: (toolParam params, **untyped context) -> _ToJson
+    end
+
+    class Tool
+      include _Tool
+
+      @name: String
+      @description: String
+      @parameters: _ToJson
+
+      def initialize: (name: String, description: String, parameters: _ToJson) ?{ (toolParam params, **untyped context) -> _ToJson } -> void
+    end
+  end
+end

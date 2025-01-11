@@ -5,10 +5,12 @@ module Autoflux
       @client: Client
       @model: String
       @memory: _Memory
+      @_tools: Array[_Tool]
 
       def initialize: (model: String, ?client: Client, ?memory: _Memory) -> void
       def call: (String prompt) -> _ToJson
       def complete: () -> _ToJson
+      def tools: () -> Array[_ToJson]?
     end
   end
 end
