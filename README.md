@@ -41,9 +41,9 @@ The agent use same parameters to call the OpenAI API. You can customize it when 
 
 ```ruby
 agent = Autoflux::OpenAI::Agent.new(
-    model: "gpt-4o-mini", # Required
-    # Extra parameters
-    temperature: 0.5,
+  model: "gpt-4o-mini", # Required
+  # Extra parameters
+  temperature: 0.5,
 )
 res = agent.call("Hello, world!")
 # => "Hello, world!" from OpenAI
@@ -57,26 +57,26 @@ You can attach tool to the agent to give it more capabilities.
 
 ```ruby
 uppercase = Autoflux::OpenAI::Tool.new(
-    name: "uppercase",
-    description: "Convert the content to uppercase",
-    parameters: {
-        type: "object",
-        properties: {
-            text: {
-                type: "string"
-            }
-        }
+  name: "uppercase",
+  description: "Convert the content to uppercase",
+  parameters: {
+    type: "object",
+    properties: {
+      text: {
+        type: "string"
+      }
     }
+  }
 ) do |params|
-    { text: params[:text].upcase }
+  { text: params[:text].upcase }
 end
 
 agent = Autoflux::OpenAI::Agent.new(
-    model: "gpt-4o-mini",
-    tools: [uppercase],
-    memory: [
-        { role: "system", content: "Always transform the user input and don't do anything else." }
-    ]
+  model: "gpt-4o-mini",
+  tools: [uppercase],
+  memory: [
+    { role: "system", content: "Always transform the user input and don't do anything else." }
+  ]
 )
 res = agent.call("Hello, world!")
 # => "HELLO, WORLD!" from OpenAI
@@ -86,24 +86,24 @@ The tool is an object has a `name`, `description`, `parameters`, and a `#call` m
 
 ```ruby
 class MyTool
-    attr_reader :name, :description, :parameters
+  attr_reader :name, :description, :parameters
 
-    def initialize
-        @name = "my-tool" # Must be string which can be lookup by the agent
-        @description = "My tool"
-        @parameters = {
-            type: "object",
-            properties: {
-                text: {
-                    type: "string"
-                }
-            }
+  def initialize
+    @name = "my-tool" # Must be string which can be lookup by the agent
+    @description = "My tool"
+    @parameters = {
+      type: "object",
+      properties: {
+        text: {
+          type: "string"
         }
-    end
+      }
+    }
+  end
 
-    def call(params, **context)
-        { text: params[:text].upcase }
-    end
+  def call(params, **context)
+    { text: params[:text].upcase }
+  end
 end
 ```
 
@@ -114,8 +114,8 @@ This gem embeds a lightweight client to interact with OpenAI API. The client can
 ```ruby
 client = Autoflux::OpenAI::Client.new(api_key: "your-api-key")
 res = client.call(
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: "Hello, world!" }]
+  model: "gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello, world!" }]
 )
 # => { choices: [{ message: { role: "assistant", content: "Hello World!" }}] }
 ```
@@ -124,12 +124,12 @@ If your api key or endpoint is not default, you can specify them in the client.
 
 ```ruby
 client = Autoflux::OpenAI::Client.new(
-    api_key: "your-api-key",
-    endpoint: URI("https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/openai")
+  api_key: "your-api-key",
+  endpoint: URI("https://gateway.ai.cloudflare.com/v1/{account_id}/{gateway_id}/openai")
 )
 client.call(
-    model: "gpt-4o-mini",
-    messages: [{ role: "user", content: "Hello, world!" }]
+  model: "gpt-4o-mini",
+  messages: [{ role: "user", content: "Hello, world!" }]
 )
 ```
 
@@ -139,21 +139,21 @@ The agent default use a Ruby array to store the conversation history. If you wan
 
 ```ruby
 class MyMemory
-    def initialize
-        @store = []
-    end
+  def initialize
+    @store = []
+  end
 
-    def push(message)
-        @store.push(message)
-    end
+  def push(message)
+    @store.push(message)
+  end
 
-    def <<(message)
-        push(message)
-    end
+  def <<(message)
+    push(message)
+  end
 
-    def to_a
-        @store.last(100)
-    end
+  def to_a
+    @store.last(100)
+  end
 end
 ```
 
