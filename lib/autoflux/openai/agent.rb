@@ -8,12 +8,13 @@ module Autoflux
 
       attr_reader :name, :model, :memory
 
-      def initialize(model:, name: DEFAULT_NAME, client: Client.new, tools: [], memory: [])
+      def initialize(model:, name: DEFAULT_NAME, client: Client.new, tools: [], memory: [], **options) # rubocop:disable Metrics/ParameterLists
         @client = client
         @model = model
         @name = name
         @memory = memory
         @_tools = tools
+        @options = options
       end
 
       def call(prompt, **context)
@@ -62,9 +63,11 @@ module Autoflux
 
       def complete
         @client.call(
-          model: @model,
-          messages: @memory.to_a,
-          tools: tools
+          @options.merge(
+            model: @model,
+            messages: @memory.to_a,
+            tools: tools
+          )
         ).dig(:choices, 0, :message)
       end
     end

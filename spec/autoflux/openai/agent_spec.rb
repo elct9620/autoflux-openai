@@ -69,6 +69,18 @@ RSpec.describe Autoflux::OpenAI::Agent do
     it { expect(agent.use({ function: { name: "uppercase", arguments: { text: "hello" }.to_json } })).to eq("HELLO") }
   end
 
+  context "with options" do
+    subject(:agent) { described_class.new(model: "gpt-4o-mini", temperature: 0.5) }
+
+    it "is expected to call with extra options" do
+      agent.call("Hello, world!")
+      expect(
+        a_request(:post, "https://api.openai.com/v1/chat/completions")
+        .with(body: hash_including(temperature: 0.5))
+      ).to have_been_made.once
+    end
+  end
+
   describe "#call" do
     subject(:call) { agent.call("Hello, world!") }
     let(:tool) { spy(Autoflux::OpenAI::Tool, name: "uppercase") }

@@ -12,8 +12,9 @@ module Autoflux
       @name: String
       @memory: _Memory
       @_tools: Array[_Tool]
+      @options: Hash[Symbol, untyped]
 
-      def initialize: (model: String, ?name: String, ?client: Client, ?memory: _Memory) -> void
+      def initialize: (model: String, ?name: String, ?client: Client, ?memory: _Memory, **untyped options) -> void
       def call: (String prompt, **untyped context) -> _ToS
       def use: (toolCall call, **untyped context) -> _ToJson
       def complete: () -> agentResponse
