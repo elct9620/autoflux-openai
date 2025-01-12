@@ -82,6 +82,31 @@ res = agent.call("Hello, world!")
 # => "HELLO, WORLD!" from OpenAI
 ```
 
+The tool is an object has a `name`, `description`, `parameters`, and a `#call` method. The `#call` method will be called with the parameters from the agent.
+
+```ruby
+class MyTool
+    attr_reader :name, :description, :parameters
+
+    def initialize
+        @name = "my-tool" # Must be string which can be lookup by the agent
+        @description = "My tool"
+        @parameters = {
+            type: "object",
+            properties: {
+                text: {
+                    type: "string"
+                }
+            }
+        }
+    end
+
+    def call(params, **context)
+        { text: params[:text].upcase }
+    end
+end
+```
+
 ### Client
 
 This gem embeds a lightweight client to interact with OpenAI API. The client can be used to interact with OpenAI API directly.
