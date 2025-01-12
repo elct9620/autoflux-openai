@@ -14,5 +14,6 @@ gem "rubocop", "~> 1.21"
 gem "steep", "~> 1.9"
 
 gem "simplecov", require: false
+gem "simplecov-cobertura", require: false
 
 gem "webmock"
