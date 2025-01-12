@@ -1,6 +1,8 @@
 Autoflux::OpenAI
 ===
 
+[![Ruby](https://github.com/elct9620/autoflux-openai/actions/workflows/main.yml/badge.svg)](https://github.com/elct9620/autoflux-openai/actions/workflows/main.yml) [![codecov](https://codecov.io/gh/elct9620/autoflux-openai/graph/badge.svg?token=VW9V0FU009)](https://codecov.io/gh/elct9620/autoflux-openai)
+
 This gem implements [autoflux](https://github.com/elct9620/autoflux) agent to use OpenAI as the backend.
 
 ## Installation
