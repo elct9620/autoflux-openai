@@ -37,6 +37,20 @@ res = agent.call("Hello, world!")
 # => "Hello, world!" from OpenAI
 ```
 
+The agent use same parameters to call the OpenAI API. You can customize it when creating the agent.
+
+```ruby
+agent = Autoflux::OpenAI::Agent.new(
+    model: "gpt-4o-mini", # Required
+    # Extra parameters
+    temperature: 0.5,
+)
+res = agent.call("Hello, world!")
+# => "Hello, world!" from OpenAI
+```
+
+> The `model`, `messages`, and `tools` will be override by the agent. The stream mode is not supported.
+
 ### Tool
 
 You can attach tool to the agent to give it more capabilities.
