@@ -73,6 +73,25 @@ RSpec.describe Autoflux::OpenAI::Client do
       it { expect { call }.to raise_error(Autoflux::OpenAI::AuthoriztionError, "Unauthorized") }
     end
 
+    context "when the response is bad request" do
+      before do
+        stub_request(:post, "https://api.openai.com/v1/chat/completions")
+          .with(
+            body: payload.to_json,
+            headers: {
+              "Content-Type" => "application/json",
+              "Authorization" => "Bearer my-api-key"
+            }
+          ).to_return(
+            status: 400,
+            body: "Bad request",
+            headers: { "Content-Type" => "text/plain" }
+          )
+      end
+
+      it { expect { call }.to raise_error(Autoflux::OpenAI::BadRequestError, "Bad request") }
+    end
+
     context "when the response is rate limited" do
       before do
         stub_request(:post, "https://api.openai.com/v1/chat/completions")

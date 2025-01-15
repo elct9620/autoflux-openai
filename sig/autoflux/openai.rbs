@@ -5,7 +5,10 @@ module Autoflux
     class Error < StandardError
     end
 
-    class AuthenticationError < Error
+    class AuthoriztionError < Error
+    end
+
+    class BadRequestError < Error
     end
 
     class RateLimitError < Error

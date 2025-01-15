@@ -7,6 +7,7 @@ module Autoflux
   module OpenAI
     class Error < StandardError; end
     class AuthoriztionError < Error; end
+    class BadRequestError < Error; end
     class RateLimitError < Error; end
 
     require_relative "openai/client"

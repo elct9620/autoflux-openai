@@ -35,6 +35,7 @@ module Autoflux
       def error_of(res)
         case res
         when Net::HTTPUnauthorized then AuthoriztionError
+        when Net::HTTPBadRequest then BadRequestError
         when Net::HTTPTooManyRequests then RateLimitError
         else Error
         end
