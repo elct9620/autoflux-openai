@@ -54,7 +54,7 @@ RSpec.describe Autoflux::OpenAI::Client do
       it { is_expected.to be_empty }
     end
 
-    context "when the response is not successful" do
+    context "when the response is not unauthorized" do
       before do
         stub_request(:post, "https://api.openai.com/v1/chat/completions")
           .with(
@@ -70,7 +70,26 @@ RSpec.describe Autoflux::OpenAI::Client do
           )
       end
 
-      it { expect { call }.to raise_error(Autoflux::OpenAI::Error, "Unauthorized") }
+      it { expect { call }.to raise_error(Autoflux::OpenAI::AuthoriztionError, "Unauthorized") }
+    end
+
+    context "when the response is rate limited" do
+      before do
+        stub_request(:post, "https://api.openai.com/v1/chat/completions")
+          .with(
+            body: payload.to_json,
+            headers: {
+              "Content-Type" => "application/json",
+              "Authorization" => "Bearer my-api-key"
+            }
+          ).to_return(
+            status: 429,
+            body: "Rate limited",
+            headers: { "Content-Type" => "text/plain" }
+          )
+      end
+
+      it { expect { call }.to raise_error(Autoflux::OpenAI::RateLimitError, "Rate limited") }
     end
   end
 end

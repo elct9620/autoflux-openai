@@ -4,5 +4,11 @@ module Autoflux
 
     class Error < StandardError
     end
+
+    class AuthenticationError < Error
+    end
+
+    class RateLimitError < Error
+    end
   end
 end

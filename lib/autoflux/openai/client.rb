@@ -16,7 +16,7 @@ module Autoflux
 
       def call(payload)
         res = http.post(@endpoint.path || "", payload.to_json, headers)
-        raise Error, res.body unless res.is_a?(Net::HTTPSuccess)
+        raise error_of(res), res.body unless res.is_a?(Net::HTTPSuccess)
 
         JSON.parse(res.body, symbolize_names: true)
       rescue JSON::ParserError
@@ -30,6 +30,14 @@ module Autoflux
           "Content-Type" => "application/json",
           "Authorization" => "Bearer #{@api_key}"
         }
+      end
+
+      def error_of(res)
+        case res
+        when Net::HTTPUnauthorized then AuthoriztionError
+        when Net::HTTPTooManyRequests then RateLimitError
+        else Error
+        end
       end
 
       def http

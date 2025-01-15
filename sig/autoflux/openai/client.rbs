@@ -13,6 +13,7 @@ module Autoflux
       def call: (::_ToJson payload) -> Hash[Symbol, untyped]
       def headers: () -> Hash[String, String]
       def http: () -> Net::HTTP
+      def error_of: (Net::HTTPResponse res) -> _Exception
     end
   end
 end
