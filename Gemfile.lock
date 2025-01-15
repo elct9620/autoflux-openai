@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    autoflux-openai (0.3.0)
+    autoflux-openai (0.4.0)
 
 GEM
   remote: https://rubygems.org/
